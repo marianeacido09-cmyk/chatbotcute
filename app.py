@@ -1,39 +1,59 @@
-import streamlit as st
-import openai
+# Natural Disaster Conversational Chatbot
 
-st.set_page_config(page_title="AI Chatbot")
+def get_response(user_input):
+    user_input = user_input.lower()
 
-st.title("🤖 AI Chatbot")
+    # Earthquake
+    if "earthquake" in user_input:
+        return (
+            "During an earthquake:\n"
+            "- Drop, cover, and hold on.\n"
+            "- Stay away from windows and heavy furniture.\n"
+            "- Have an emergency kit ready with food, water, and medical supplies."
+        )
+    
+    # Flood
+    elif "flood" in user_input:
+        return (
+            "During a flood:\n"
+            "- Move to higher ground immediately.\n"
+            "- Avoid walking or driving through flood waters.\n"
+            "- Keep emergency supplies ready and follow evacuation orders."
+        )
 
-openai.api_key = st.secrets["OPENAI_API_KEY"]
+    # Typhoon / Storm
+    elif "typhoon" in user_input or "storm" in user_input:
+        return (
+            "During a typhoon or storm:\n"
+            "- Stay indoors and away from windows.\n"
+            "- Secure doors and windows.\n"
+            "- Keep extra batteries, flashlights, and food ready."
+        )
+    
+    # Volcano
+    elif "volcano" in user_input or "eruption" in user_input:
+        return (
+            "During a volcanic eruption:\n"
+            "- Evacuate if authorities advise.\n"
+            "- Wear masks to avoid inhaling ash.\n"
+            "- Keep emergency supplies ready in case you need to leave quickly."
+        )
+    
+    # Unknown input
+    else:
+        return "Sorry, I don't have advice for that. Can you ask about an earthquake, flood, typhoon, or volcano?"
 
-if "messages" not in st.session_state:
-    st.session_state.messages = []
+def chatbot():
+    print("Hello! I'm SafeBot 🌪️")
+    print("Ask me what to do during natural disasters, or type 'exit' to leave.\n")
+    
+    while True:
+        user_input = input("You: ").strip()
+        if user_input.lower() == "exit":
+            print("SafeBot: Stay safe! Goodbye 👋")
+            break
+        response = get_response(user_input)
+        print("SafeBot:", response, "\n")
 
-for message in st.session_state.messages:
-    with st.chat_message(message["role"]):
-        st.markdown(message["content"])
-
-user_input = st.chat_input("Type your message...")
-
-if user_input:
-    st.session_state.messages.append(
-        {"role": "user", "content": user_input}
-    )
-
-    with st.chat_message("user"):
-        st.markdown(user_input)
-
-    response = openai.ChatCompletion.create(
-        model="gpt-3.5-turbo",
-        messages=st.session_state.messages
-    )
-
-    bot_reply = response.choices[0].message.content
-
-    st.session_state.messages.append(
-        {"role": "assistant", "content": bot_reply}
-    )
-
-    with st.chat_message("assistant"):
-        st.markdown(bot_reply)
+if __name__ == "__main__":
+    chatbot()
